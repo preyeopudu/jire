@@ -7,10 +7,12 @@ import DrawerHeader from "../../components/DrawerHeader";
 import numbro from "numbro";
 import { FAB, Colors } from "react-native-paper";
 import { useNavigation } from "@react-navigation/core";
+import { useSelector } from "react-redux";
 
 const HomeScreen = () => {
+  const user = useSelector((s) => s.UserReducer);
   const navigation = useNavigation();
-  const n = numbro(1000000).format({ thousandSeparated: true });
+  const n = numbro(user.creditBalance).format({ thousandSeparated: true });
   return (
     <View style={{ flex: 1, flexDirection: "column" }}>
       <View

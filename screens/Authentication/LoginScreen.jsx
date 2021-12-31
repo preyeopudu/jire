@@ -1,26 +1,62 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, Keyboard } from "react-native";
+import { View, Text, TextInput, Image, Keyboard, Alert } from "react-native";
 import {
+  ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { ScaledSheet, scale } from "react-native-size-matters";
-import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/core";
-import { useDispatch, useSelector } from "react-redux";
-import { LogIn, LogOut } from "../../store/actions/index.js";
+import { useDispatch } from "react-redux";
+import { LogIn } from "../../store/actions/index.js";
+import { Loading } from "../../components/Loading.jsx";
+import { LOGIN, USER } from "../../API/Auth-api.js";
+import { Ionicons } from "@expo/vector-icons";
 
 const LoginScreen = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState();
+  const [loading, setLoading] = useState();
+  const [email, SetEmail] = useState();
+  const [password, SetPassword] = useState();
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
 
-  const handleSubmit = () => {
-    dispatch(LogIn());
+  const handleSubmit = async () => {
+    setLoading(true);
+    if (email === undefined || password === undefined) {
+      Alert.alert("LOGIN ERROR", "You skipped a field !");
+      setLoading(false);
+    } else {
+      const login = await LOGIN({ email: email, password: password });
+      if (!login.data) {
+        if (login.err == "Network error") {
+          Alert.alert("Unable to connect", "check internet settings");
+          setLoading(false);
+        } else if (login.err == "Invalid details") {
+          Alert.alert("Inavlid details", "invalid mail or password");
+          setLoading(false);
+        }
+        setLoading(false);
+      } else if (login.data) {
+        setLoading(false);
+        const getuser = await USER(login.data.token);
+        dispatch(LogIn(getuser.data.user));
+      }
+    }
   };
+  if (loading === true) {
+    return <Loading />;
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        flexDirection: "column",
+        backgroundColor: "#fff",
+      }}
+    >
       <TouchableWithoutFeedback
         style={{
           height: "100%",
@@ -31,41 +67,51 @@ const LoginScreen = () => {
           Keyboard.dismiss();
         }}
       >
-        <View style={{ flex: 1 }}>
-          <Image
-            style={{
-              width: 150,
-              height: 150,
-              borderRadius: 1000,
-              alignSelf: "center",
-              marginTop: 20,
-            }}
-            source={require("../../assets/logo.png")}
-          />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flex: 1, marginTop: 40 }}>
+            <Image
+              style={{
+                width: 300,
+                height: 300,
 
-          <View style={styles.formContainer}>
-            <View>
-              <View style={styles.collectorContainer}>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Email or Phone Number"
-                    style={styles.input}
-                  />
+                alignSelf: "center",
+              }}
+              source={require("../../assets/confirm.png")}
+            />
+            <View style={styles.formContainer}>
+              <View>
+                <View style={styles.collectorContainer}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      placeholder="Email Address"
+                      style={styles.input}
+                      onChangeText={(val) => SetEmail(val)}
+                    />
+                    <Ionicons name="md-mail" size={24} color="black" />
+                  </View>
                 </View>
-              </View>
 
-              <View style={styles.collectorContainer}>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="password"
-                    secureTextEntry={true}
-                    style={styles.input}
-                  />
+                <View style={styles.collectorContainer}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      placeholder="Password"
+                      secureTextEntry={true}
+                      style={styles.input}
+                      onChangeText={(val) => SetPassword(val)}
+                    />
+                    <Ionicons name="ios-lock-closed" size={24} color="black" />
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-
           <View style={styles.bottomContainer}>
             <TouchableOpacity
               activeOpacity={0.6}
@@ -75,7 +121,7 @@ const LoginScreen = () => {
             >
               <LinearGradient
                 colors={["#0166fe", "#031a3c"]}
-                style={[styles.signIn, { borderRadius: 12, width: "100%" }]}
+                style={[styles.signIn, { borderRadius: 30, width: "100%" }]}
               >
                 <View style={styles.buttonContainer}>
                   <Text
@@ -127,33 +173,29 @@ const LoginScreen = () => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-    </View>
+    </ScrollView>
   );
 };
 
 export default LoginScreen;
 
 const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    flexDirection: "column",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   inputContainer: {
     backgroundColor: "#FAFBFC",
     borderBottomWidth: 1,
     borderColor: "#DFE1E6",
-    width: "300@s",
-    borderRadius: 10,
+    borderRadius: 12,
+    elevation: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    width: "100%",
   },
   input: {
     fontSize: "14@s",
-    width: "80%",
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
+    width: "85%",
   },
   buttonContainer: {
     marginTop: 50,
@@ -172,17 +214,17 @@ const styles = ScaledSheet.create({
   },
   bottomContainer: {
     justifyContent: "flex-end",
-    marginBottom: 36,
     flex: 1,
     alignItems: "center",
     alignSelf: "center",
+    marginVertical: 30,
   },
 
   buttonContainer: {
     width: "300@s",
   },
   collectorContainer: {
-    marginVertical: 15,
+    marginVertical: 12,
   },
   label: {
     color: "#A9A9A9",

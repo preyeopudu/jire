@@ -1,6 +1,7 @@
-export const LogIn = () => {
+export const LogIn = (user) => {
   const action = {
     type: "LOGGEDIN",
+    user,
   };
   return action;
 };

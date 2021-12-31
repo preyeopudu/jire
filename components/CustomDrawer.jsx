@@ -8,9 +8,10 @@ import { ScaledSheet } from "react-native-size-matters";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { LogIn, LogOut } from "../store/actions/index.js";
+import { LogOut } from "../store/actions/index.js";
 
 const CustomDrawer = (props) => {
+  const user = useSelector((s) => s.UserReducer);
   const dispatch = useDispatch();
   const handleSubmit = () => {
     dispatch(LogOut());
@@ -44,13 +45,14 @@ const CustomDrawer = (props) => {
           <Text
             style={{
               marginTop: 10,
-              fontSize: 25,
+              fontSize: 35,
               color: "black",
-              marginBottom: 30,
+              marginBottom: 5,
               textAlign: "center",
             }}
           >
-            Opudu Preye
+            {user.firstName[0]}
+            {user.lastName[0]}
           </Text>
         </View>
 

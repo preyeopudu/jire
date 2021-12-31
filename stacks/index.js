@@ -13,7 +13,7 @@ import {
 import LoginScreen from "../screens/Authentication/LoginScreen.jsx";
 import RegistrationScreen from "../screens/Authentication/RegistrationScreen.jsx";
 import { NavigationContainer } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import TopUpScreen from "../screens/dashboard/TopUpScreen.jsx";
 import FundScreen from "../screens/dashboard/FundScreen.jsx";
 import TransactionScreen from "../screens/dashboard/TransactionsScreen.jsx";
