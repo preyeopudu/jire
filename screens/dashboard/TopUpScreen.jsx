@@ -67,7 +67,9 @@ const TopUpScreen = () => {
           <DrawerHeader title="Top Up" />
 
           <View style={{ marginHorizontal: 10, marginVertical: 20 }}>
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
+            <Text
+              style={{ fontSize: 15, marginHorizontal: 7, marginBottom: 10 }}
+            >
               Select country
             </Text>
             <Picker
