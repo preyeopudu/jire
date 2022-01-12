@@ -15,7 +15,7 @@ import { LOGIN, USER } from "../../API/Auth-api.js";
 import { Ionicons } from "@expo/vector-icons";
 
 const LoginScreen = () => {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [email, SetEmail] = useState();
   const [password, SetPassword] = useState();
   const { navigate } = useNavigation();
@@ -30,11 +30,11 @@ const LoginScreen = () => {
       const login = await LOGIN({ email: email, password: password });
       if (!login.data) {
         if (login.err == "Network error") {
+          setLoading(false);
           Alert.alert("Unable to connect", "check internet settings");
-          setLoading(false);
         } else if (login.err == "Invalid details") {
-          Alert.alert("Inavlid details", "invalid mail or password");
           setLoading(false);
+          Alert.alert("Inavlid details", "invalid mail or password");
         }
         setLoading(false);
       } else if (login.data) {
@@ -44,15 +44,11 @@ const LoginScreen = () => {
       }
     }
   };
-  if (loading === true) {
-    return <Loading />;
-  }
 
   return (
     <ScrollView
       style={{
         flex: 1,
-        backgroundColor: "#fff",
         flexDirection: "column",
         backgroundColor: "#fff",
       }}
@@ -172,6 +168,7 @@ const LoginScreen = () => {
             </View>
           </View>
         </View>
+        <Loading visible={loading} />
       </TouchableWithoutFeedback>
     </ScrollView>
   );

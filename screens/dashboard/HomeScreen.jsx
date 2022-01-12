@@ -18,7 +18,7 @@ const HomeScreen = () => {
       <View
         style={{ flex: 2, backgroundColor: "#044CAC", flexDirection: "column" }}
       >
-        <DrawerHeader title="Dashboard" />
+        <DrawerHeader title="Dashboard" theme={true} />
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={{ color: "#fff", textAlign: "center", fontSize: 38 }}>
             {"\u20A6"} {n}

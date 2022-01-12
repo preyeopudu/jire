@@ -24,7 +24,7 @@ import { Loading } from "../../components/Loading.jsx";
 import { REGISTER, USER } from "../../API/Auth-api.js";
 
 const RegistrationScreen = () => {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [firstName, SetFirstName] = useState();
   const [lastName, SetLastName] = useState();
   const [email, SetEmail] = useState();
@@ -41,6 +41,7 @@ const RegistrationScreen = () => {
     ) {
       Alert.alert("REGISTRATION ERROR", "You skipped a field");
     } else {
+      setLoading(true);
       const register = await REGISTER({
         email: email,
         password: password,
@@ -62,12 +63,9 @@ const RegistrationScreen = () => {
     }
   };
 
-  if (loading === true) {
-    return <Loading />;
-  }
-
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       style={{
         flex: 1,
         backgroundColor: "#fff",
@@ -220,6 +218,7 @@ const RegistrationScreen = () => {
             </View>
           </View>
         </View>
+        <Loading visible={loading} />
       </TouchableWithoutFeedback>
     </ScrollView>
   );

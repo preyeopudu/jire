@@ -17,7 +17,7 @@ import { useSelector } from "react-redux";
 import TopUpScreen from "../screens/dashboard/TopUpScreen.jsx";
 import FundScreen from "../screens/dashboard/FundScreen.jsx";
 import TransactionScreen from "../screens/dashboard/TransactionsScreen.jsx";
-import AccountScreen from "../screens/dashboard/AccountScreen.jsx";
+import AccountScreen from "../screens/dashboard/profileScreen.jsx";
 import SupportScreen from "../screens/dashboard/SupportScreen.jsx";
 
 const Stack = createStackNavigator();
@@ -45,7 +45,7 @@ export const DrawerStack = () => {
       }}
     >
       <Drawer.Screen
-        name="Home"
+        name="Dashboard"
         component={HomeScreen}
         options={{
           drawerIcon: ({ color }) => (
@@ -85,7 +85,7 @@ export const DrawerStack = () => {
       />
 
       <Drawer.Screen
-        name="Account"
+        name="Profile"
         component={AccountScreen}
         options={{
           drawerIcon: ({ color }) => (
