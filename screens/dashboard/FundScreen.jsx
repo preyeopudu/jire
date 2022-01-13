@@ -13,6 +13,7 @@ import DrawerHeader from "../../components/DrawerHeader";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import Action from "../../components/Action";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 import {
   StripeProvider,
@@ -22,6 +23,7 @@ import {
 import { Button } from "react-native-paper";
 
 const TopUpScreen = () => {
+  const token = useSelector((s) => s.UserReducer[1]);
   return (
     <StripeProvider publishableKey="pk_live_51KA1MJHS52jZDXV1U3C7om2rUB2mPj57OgE2T1g2zI98AQ9gtvs5X4qphHlSQQ7ezmOsX5Hm358bZezaHUKoRsGb005qSFABiD">
       <TopUp />
