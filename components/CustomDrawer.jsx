@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LogOut } from "../store/actions/index.js";
 
 const CustomDrawer = (props) => {
-  const user = useSelector((s) => s.UserReducer);
+  const user = useSelector((s) => s.UserReducer[0]);
   const dispatch = useDispatch();
   const handleSubmit = () => {
     dispatch(LogOut());

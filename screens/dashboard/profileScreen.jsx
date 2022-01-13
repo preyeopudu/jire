@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import Action from "../../components/Action";
 
 const AccountScreen = () => {
-  const user = useSelector((s) => s.UserReducer);
+  const user = useSelector((s) => s.UserReducer[0]);
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
       <TouchableWithoutFeedback

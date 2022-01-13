@@ -40,7 +40,7 @@ const LoginScreen = () => {
       } else if (login.data) {
         setLoading(false);
         const getuser = await USER(login.data.token);
-        dispatch(LogIn(getuser.data.user));
+        dispatch(LogIn(getuser.data.user, login.data.token));
       }
     }
   };

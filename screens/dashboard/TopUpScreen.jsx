@@ -26,7 +26,7 @@ const TopUpScreen = () => {
   const [country, setCountry] = useState();
   const [loading, setLoading] = useState(true);
   const [operator, setOperator] = useState();
-
+  console.log(country);
   useEffect(async () => {
     const GetToken = await GETTOKEN();
     setToken(GetToken.data.token);
@@ -39,8 +39,8 @@ const TopUpScreen = () => {
   }, [token]);
 
   useEffect(async () => {
-    // const GetOperator = await GETOPERATORS(token, country);
-    // console.log(GetOperator);
+    const GetOperator = await GETOPERATORS(token, country);
+    console.log(GetOperator);
   }, [country]);
 
   if (loading) {
@@ -74,14 +74,14 @@ const TopUpScreen = () => {
             </Text>
             <Picker
               selectedValue={country}
-              onValueChange={(itemValue, itemIndex) => {
+              onValueChange={(itemValue) => {
                 setCountry(itemValue);
               }}
             >
               {countries.map((list, index) => (
                 <Picker.Item
                   label={list.name}
-                  value={list.isoxName}
+                  value={list.isoName}
                   key={index}
                 />
               ))}

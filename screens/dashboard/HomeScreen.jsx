@@ -10,7 +10,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 
 const HomeScreen = () => {
-  const user = useSelector((s) => s.UserReducer);
+  const user = useSelector((s) => s.UserReducer[0]);
   const navigation = useNavigation();
   const n = numbro(user.creditBalance).format({ thousandSeparated: true });
   return (

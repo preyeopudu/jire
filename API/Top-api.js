@@ -25,12 +25,15 @@ export const GETCOUNTRIES = async (token) => {
 
 export const GETOPERATORS = async (token, country) => {
   console.log("loading");
+  console.log(token);
+  console.log(country);
   const res = await axios
     .get(
-      `${TOPUP}/operators/countries/${country}?includeBundles=true&includeData=true&includePin=true&includePin=true&suggestedAmounts=true&suggestedAmountsMap=true`,
+      `${TOPUP}/operators/countries/${country}?includeBundles=true&includeData=true&includePin=true&suggestedAmounts=true&suggestedAmountsMap=true`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
+          Accept: "application/com.reloadly.topups-v1+json",
         },
       }
     )
