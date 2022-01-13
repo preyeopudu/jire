@@ -8,7 +8,7 @@ const Action = (props) => {
         props.onPress();
       }}
       activeOpacity={0.9}
-      style={[{ backgroundColor: "#044CAC", borderRadius: 5 }, props.style]}
+      style={[{ backgroundColor: "#044CAC", borderRadius: 20 }, props.style]}
     >
       <View
         style={{
@@ -21,7 +21,7 @@ const Action = (props) => {
           style={{
             color: "#fff",
             textAlign: "center",
-            fontSize: 25,
+            fontSize: 20,
             letterSpacing: 3,
           }}
         >

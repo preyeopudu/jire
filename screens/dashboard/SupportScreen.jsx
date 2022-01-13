@@ -4,7 +4,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ScaledSheet } from "react-native-size-matters";
 import DrawerHeader from "../../components/DrawerHeader";
-import { FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 
 const SupportScreen = () => {
@@ -23,6 +23,9 @@ const SupportScreen = () => {
           alignContent: "center",
         }}
       >
+        <Text style={{ textAlign: "center", fontSize: 20, marginBottom: 20 }}>
+          Contact us here
+        </Text>
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => {
@@ -39,7 +42,7 @@ const SupportScreen = () => {
               borderRadius: 20,
             }}
           >
-            <FontAwesome name="send-o" size={27} color="white" />
+            <MaterialCommunityIcons name="email-edit" size={27} color="white" />
           </View>
         </TouchableOpacity>
       </View>

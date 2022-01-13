@@ -14,7 +14,7 @@ import { Ionicons, AntDesign } from "@expo/vector-icons";
 import Action from "../../components/Action";
 import axios from "axios";
 import { useSelector } from "react-redux";
-
+import { FUNDACCOUNT } from "../../API/Fund-api";
 import {
   StripeProvider,
   CardField,
@@ -32,20 +32,19 @@ const TopUpScreen = () => {
 };
 
 const TopUp = () => {
+  const token = useSelector((s) => s.UserReducer[1]);
   const [maskedValue, setMaskedValue] = useState("");
   const [amount, setAmount] = useState(0);
   const [cardDetails, setCardDetails] = useState();
   const { confirmPayment, loading } = useConfirmPayment();
 
-  const handlePayPress = async () => {
+  const HandlePayment = async () => {
     if (!cardDetails?.complete || amount) {
       Alert.alert("Please complete form ");
       return;
     }
-  };
-
-  const HandlePayment = () => {
-    // const{}=await stripe
+    const Fund = await FUNDACCOUNT(token, cardDetails);
+    console.log(Fund);
   };
 
   useEffect(() => {});
@@ -107,7 +106,7 @@ const TopUp = () => {
               <Action
                 title="Submit"
                 onPress={() => {
-                  alert(1);
+                  HandlePayment();
                 }}
               />
             </View>

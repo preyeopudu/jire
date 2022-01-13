@@ -5,19 +5,18 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
+  TextInput,
   ActivityIndicator,
 } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import DrawerHeader from "../../components/DrawerHeader";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
-import { TextInput } from "react-native-paper";
-import { MaskedTextInput, Masks } from "react-native-mask-text";
+
 import Action from "../../components/Action";
 import { useEffect } from "react";
 import { GETCOUNTRIES, GETOPERATORS, GETTOKEN } from "../../API/Top-api";
 import { Picker } from "@react-native-picker/picker";
 import { Loading } from "../../components/Loading";
-import DropDownPicker from "react-native-dropdown-picker";
 
 const TopUpScreen = () => {
   const [open, setOpen] = useState(false);
@@ -72,20 +71,63 @@ const TopUpScreen = () => {
             >
               Select country
             </Text>
-            <Picker
-              selectedValue={country}
-              onValueChange={(itemValue) => {
-                setCountry(itemValue);
+            <View
+              style={{
+                borderColor: "#cdcdcd",
+                borderRadius: 10,
+                borderWidth: 1,
+                paddingHorizontal: 5,
+                paddingVertical: 2,
+                marginTop: 10,
               }}
             >
-              {countries.map((list, index) => (
-                <Picker.Item
-                  label={list.name}
-                  value={list.isoName}
-                  key={index}
-                />
-              ))}
-            </Picker>
+              <Picker
+                selectedValue={country}
+                onValueChange={(itemValue) => {
+                  setCountry(itemValue);
+                }}
+              >
+                {countries.map((list, index) => (
+                  <Picker.Item
+                    label={list.name}
+                    value={list.isoName}
+                    key={index}
+                  />
+                ))}
+              </Picker>
+            </View>
+
+            <Text style={{ fontSize: 15, marginHorizontal: 7, marginTop: 30 }}>
+              Set up Phone number
+            </Text>
+
+            <View
+              style={{
+                borderColor: "#cdcdcd",
+                borderRadius: 10,
+                borderWidth: 1,
+                paddingHorizontal: 15,
+                paddingVertical: 12,
+                marginTop: 15,
+                fontSize: 18,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>+</Text>
+              <TextInput
+                style={{
+                  marginHorizontal: 7,
+
+                  fontSize: 18,
+                }}
+                placeholder="Phone number"
+                keyboardType="numeric"
+              />
+            </View>
+            <View style={{ marginTop: 50 }}>
+              <Action title="Submit" />
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
