@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   View,
   Text,
@@ -19,18 +19,33 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 import { LogIn, LogOut } from "../../store/actions/index.js";
-import { Ionicons, EvilIcons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, EvilIcons, MaterialIcons,Entypo } from "@expo/vector-icons";
 import { Loading } from "../../components/Loading.jsx";
 import { REGISTER, USER } from "../../API/Auth-api.js";
+import { GETCOUNTRIES, GETOPERATORS, GETTOKEN } from "../../API/Top-api";
 
-const RegistrationScreen = () => {
-  const [loading, setLoading] = useState(false);
-  const [firstName, SetFirstName] = useState();
-  const [lastName, SetLastName] = useState();
-  const [email, SetEmail] = useState();
-  const [password, SetPassword] = useState();
+const DataScreen = ({route}) => {
+  const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState();
+  const [countries, setCountries] = useState();
+  const [country, setCountry] = useState();
+  const [currency,setCurrency]=useState()
+  
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
+
+    useEffect(async () => {
+    const GetToken = await GETTOKEN();
+    setToken(GetToken.data.token);
+  }, []);
+
+  useEffect(async () => {
+    const GetCountries = await GETCOUNTRIES(token);
+    setCountries(GetCountries.data);
+    console.log(GetCountries.data)
+    console.log(countries)
+    setLoading(false);
+  }, [token]);
 
   const handleSubmit = async () => {
     if (
@@ -41,9 +56,31 @@ const RegistrationScreen = () => {
     ) {
       Alert.alert("REGISTRATION ERROR", "You skipped a field");
     } else {
-      navigate("Data",{firstName:firstName,lastName:lastName,email:email,password:password});
+      setLoading(true);
+      const register = await REGISTER({
+        email: email,
+        password: password,
+        lastName: lastName,
+        firstName: firstName,
+      });
+      if (!register.data) {
+        if (register.err == "Network error") {
+          setLoading(false);
+          Alert.alert("Unable to connect", "check internet settings");
+        } else if (register.err == "401") {
+          Alert.alert("Email already used", "Try another!");
+        }
+      } else if (register.data) {
+        setLoading(false);
+        const getuser = await USER(register.data.token);
+        dispatch(LogIn(getuser.data.user));
+      }
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView
@@ -85,56 +122,82 @@ const RegistrationScreen = () => {
             />
             <View style={styles.formContainer}>
               <View>
-                <View style={styles.collectorContainer}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      placeholder="First Name"
-                      style={styles.input}
-                      onChangeText={(val) => SetFirstName(val)}
-                    />
-                    <MaterialIcons
-                      name="verified-user"
-                      size={24}
-                      color="black"
-                    />
+                <View style={[styles.collectorContainer,]}>
+                  <View>
+                     <View
+                        style={{
+                        backgroundColor:'#fff',
+                        elevation:3,
+                        paddingHorizontal: 5,
+                        paddingVertical: 2,
+                        marginTop: 10,
+                        borderRadius:2
+                    }}
+            >
+              <Picker
+                selectedValue={country}
+                onValueChange={(itemValue) => {
+                  setCountry(itemValue);
+                }}
+              >
+                {countries.map((list, index) => (
+                  <Picker.Item
+                    label={list.currencyName}
+                    value={list.currencyCode}
+                    key={index}
+                  />
+                ))}
+              </Picker>
+            </View>
+                    
                   </View>
                 </View>
+
+
+
+
+                <View style={[styles.collectorContainer,]}>
+                  <View>
+                     <View
+                        style={{
+                        backgroundColor:'#fff',
+                        elevation:3,
+                        paddingHorizontal: 5,
+                        paddingVertical: 2,
+                        marginTop: 10,
+                        borderRadius:2
+                    }}
+            >
+              <Picker
+                selectedValue={currency}
+                onValueChange={(itemValue) => {
+                  setCurrency(itemValue);
+                }}
+              >
+                {countries.map((list, index) => (
+                  <Picker.Item
+                    label={list.name}
+                    value={list.isoName}
+                    key={index}
+                  />
+                ))}
+              </Picker>
+            </View>
+                    
+                  </View>
+                </View>
+
+                
+
 
                 <View style={styles.collectorContainer}>
                   <View style={styles.inputContainer}>
                     <TextInput
-                      placeholder="Last Name"
-                      style={styles.input}
-                      onChangeText={(val) => SetLastName(val)}
-                    />
-                    <MaterialIcons
-                      name="verified-user"
-                      size={24}
-                      color="black"
-                    />
-                  </View>
-                </View>
-
-                <View style={styles.collectorContainer}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      placeholder="Email Address"
-                      style={styles.input}
-                      onChangeText={(val) => SetEmail(val)}
-                    />
-                    <Ionicons name="md-mail" size={24} color="black" />
-                  </View>
-                </View>
-
-                <View style={styles.collectorContainer}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      placeholder="Password"
-                      secureTextEntry={true}
+                      placeholder="Phone number"
                       style={styles.input}
                       onChangeText={(val) => SetPassword(val)}
                     />
-                    <Ionicons name="ios-lock-closed" size={24} color="black" />
+                    <Entypo name="old-phone" size={24} color="black" />
                   </View>
                 </View>
               </View>
@@ -144,7 +207,7 @@ const RegistrationScreen = () => {
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => {
-                handleSubmit()
+                handleSubmit();
               }}
             >
               <LinearGradient
@@ -189,7 +252,7 @@ const RegistrationScreen = () => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigate("Login");
+                    navigate("Registration");
                   }}
                 >
                   <Text style={{ fontSize: scale(12), color: "#42526E" }}>
@@ -206,7 +269,7 @@ const RegistrationScreen = () => {
   );
 };
 
-export default RegistrationScreen;
+export default DataScreen;
 
 const styles = ScaledSheet.create({
   inputContainer: {
