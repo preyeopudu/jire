@@ -19,16 +19,26 @@ import FundScreen from "../screens/dashboard/FundScreen.jsx";
 import TransactionScreen from "../screens/dashboard/TransactionsScreen.jsx";
 import AccountScreen from "../screens/dashboard/profileScreen.jsx";
 import SupportScreen from "../screens/dashboard/SupportScreen.jsx";
+import CardScreen from "../screens/dashboard/Topup/CardScreen.jsx";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
+const FundStacks = createStackNavigator();
 export const DefaultStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen component={LoginScreen} name="Login" />
       <Stack.Screen component={RegistrationScreen} name="Registration" />
     </Stack.Navigator>
+  );
+};
+
+export const FundStack = () => {
+  return (
+    <FundStacks.Navigator screenOptions={{ headerShown: false }}>
+      <FundStacks.Screen component={FundScreen} name="fund" />
+      <FundStacks.Screen component={CardScreen} name="card" />
+    </FundStacks.Navigator>
   );
 };
 
@@ -66,7 +76,7 @@ export const DrawerStack = () => {
 
       <Drawer.Screen
         name="Fund Wallet"
-        component={FundScreen}
+        component={FundStack}
         options={{
           drawerIcon: ({ color }) => (
             <Fontisto name="money-symbol" size={22} color={color} />

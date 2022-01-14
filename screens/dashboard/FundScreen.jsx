@@ -1,145 +1,77 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Keyboard,
-  TouchableWithoutFeedback,
-  ScrollView,
-  Alert,
-  TextInput,
-} from "react-native";
-import { ScaledSheet } from "react-native-size-matters";
+import { View, Text, ScrollView, Alert } from "react-native";
 import DrawerHeader from "../../components/DrawerHeader";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-import Action from "../../components/Action";
-import axios from "axios";
 import { useSelector } from "react-redux";
-import { FUNDACCOUNT } from "../../API/Fund-api";
-import {
-  StripeProvider,
-  CardField,
-  useConfirmPayment,
-} from "@stripe/stripe-react-native";
-import { Button } from "react-native-paper";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/core";
+
+const Card = (props) => {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      style={{
+        backgroundColor: "#044CAC",
+        width: "90%",
+        borderRadius: 10,
+        alignSelf: "center",
+        marginVertical: 20,
+      }}
+      onPress={() => {
+        props.onPress();
+      }}
+    >
+      <View>
+        <Text
+          style={{
+            paddingVertical: 20,
+            textAlign: "center",
+            fontSize: 22,
+            color: "#fff",
+          }}
+        >
+          {props.title}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const TopUpScreen = () => {
   const token = useSelector((s) => s.UserReducer[1]);
+  const { navigate } = useNavigation();
   return (
-    <StripeProvider publishableKey="pk_live_51KA1MJHS52jZDXV1U3C7om2rUB2mPj57OgE2T1g2zI98AQ9gtvs5X4qphHlSQQ7ezmOsX5Hm358bZezaHUKoRsGb005qSFABiD">
-      <TopUp />
-    </StripeProvider>
+    <View style={{ backgroundColor: "#fff", flex: 1 }}>
+      <DrawerHeader title="Fund Account" />
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ScrollView>
+          <Card
+            onPress={() => {
+              navigate("card");
+            }}
+            title="Pay with Card"
+          />
+          <Card
+            onPress={() => {
+              Alert.alert("Not available yet", "coming soon");
+            }}
+            title="Fund with Bitcoin"
+          />
+          <Card
+            onPress={() => {
+              Alert.alert("Not available yet", "coming soon");
+            }}
+            title="Fund with Paypal"
+          />
+          <Card
+            onPress={() => {
+              Alert.alert("Not available yet", "coming soon");
+            }}
+            title="Bank Transfer"
+          />
+        </ScrollView>
+      </View>
+    </View>
   );
 };
-
-const TopUp = () => {
-  const token = useSelector((s) => s.UserReducer[1]);
-  const [maskedValue, setMaskedValue] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [cardDetails, setCardDetails] = useState();
-  const { confirmPayment, loading } = useConfirmPayment();
-
-  const HandlePayment = async () => {
-    if (!cardDetails?.complete || amount) {
-      Alert.alert("Please complete form ");
-      return;
-    }
-    const Fund = await FUNDACCOUNT(token, cardDetails);
-    console.log(Fund);
-  };
-
-  useEffect(() => {});
-  return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={{ flex: 1, backgroundColor: "#fff", flexDirection: "column" }}
-    >
-      <TouchableWithoutFeedback
-        style={{
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          flex: 1,
-        }}
-        onPress={() => {
-          Keyboard.dismiss();
-        }}
-      >
-        <View>
-          <DrawerHeader title="Fund Account" />
-
-          <View style={{ width: "90%", alignSelf: "center" }}>
-            <View
-              style={{
-                alignItems: "center",
-                width: "100%",
-                justifyContent: "space-between",
-                marginVertical: 15,
-              }}
-            >
-              <TextInput
-                style={{
-                  backgroundColor: "#fff",
-                  color: "black",
-                  width: "100%",
-                  fontSize: 18,
-                  paddingVertical: 15,
-                  backgroundColor: "#F5F5F5",
-                  paddingHorizontal: 25,
-                }}
-                placeholder="Amount in Dollars"
-                keyboardType="numeric"
-              />
-            </View>
-
-            <CardField
-              postalCodeEnabled={true}
-              placeholder={{
-                number: "4242 4242 4242 4242",
-              }}
-              cardStyle={styles.card}
-              style={styles.cardContainer}
-              onCardChange={(cardDetails) => {
-                setCardDetails(cardDetails);
-              }}
-            />
-            <View style={{ marginVertical: 40 }}>
-              <Action
-                title="Submit"
-                onPress={() => {
-                  HandlePayment();
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </ScrollView>
-  );
-};
-
-const styles = ScaledSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  text: {
-    color: "#161924",
-    fontSize: 20,
-    fontWeight: "500",
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-  },
-
-  card: {
-    backgroundColor: "#efefefef",
-  },
-  cardContainer: {
-    height: 50,
-    marginVertical: 30,
-  },
-});
 
 export default TopUpScreen;
