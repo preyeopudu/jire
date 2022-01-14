@@ -12,6 +12,7 @@ import {
 } from "@expo/vector-icons";
 import LoginScreen from "../screens/Authentication/LoginScreen.jsx";
 import RegistrationScreen from "../screens/Authentication/RegistrationScreen.jsx";
+import DataScreen from "../screens/Authentication/DataScreen.jsx"
 import { NavigationContainer } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import TopUpScreen from "../screens/dashboard/TopUpScreen.jsx";
@@ -21,6 +22,7 @@ import AccountScreen from "../screens/dashboard/profileScreen.jsx";
 import SupportScreen from "../screens/dashboard/SupportScreen.jsx";
 import CardScreen from "../screens/dashboard/Topup/CardScreen.jsx";
 
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const FundStacks = createStackNavigator();
@@ -29,6 +31,7 @@ export const DefaultStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen component={LoginScreen} name="Login" />
       <Stack.Screen component={RegistrationScreen} name="Registration" />
+      <Stack.Screen component={DataScreen} name="Data"/>
     </Stack.Navigator>
   );
 };
