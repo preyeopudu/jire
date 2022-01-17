@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,22 +19,23 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 import { LogIn, LogOut } from "../../store/actions/index.js";
-import { Ionicons, EvilIcons, MaterialIcons,Entypo } from "@expo/vector-icons";
+import { Ionicons, EvilIcons, MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Loading } from "../../components/Loading.jsx";
 import { REGISTER, USER } from "../../API/Auth-api.js";
 import { GETCOUNTRIES, GETOPERATORS, GETTOKEN } from "../../API/Top-api";
 
-const DataScreen = ({route}) => {
+const DataScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState();
+  const [token, setToken] = useState();
   const [countries, setCountries] = useState();
   const [country, setCountry] = useState();
-  const [currency,setCurrency]=useState()
-  
+  const [currency, setCurrency] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
+
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
 
-    useEffect(async () => {
+  useEffect(async () => {
     const GetToken = await GETTOKEN();
     setToken(GetToken.data.token);
   }, []);
@@ -42,26 +43,27 @@ const DataScreen = ({route}) => {
   useEffect(async () => {
     const GetCountries = await GETCOUNTRIES(token);
     setCountries(GetCountries.data);
-    console.log(GetCountries.data)
-    console.log(countries)
+    console.log(countries);
     setLoading(false);
   }, [token]);
 
   const handleSubmit = async () => {
     if (
-      email === undefined ||
-      password === undefined ||
-      lastName === undefined ||
-      firstName === undefined
+      country === undefined ||
+      currency === undefined ||
+      phoneNumber === undefined
     ) {
       Alert.alert("REGISTRATION ERROR", "You skipped a field");
     } else {
       setLoading(true);
       const register = await REGISTER({
-        email: email,
-        password: password,
-        lastName: lastName,
-        firstName: firstName,
+        email: route.params.email,
+        password: route.params.password,
+        lastName: route.params.lastName,
+        firstName: route.params.firstName,
+        currency: currency,
+        country: country,
+        phoneNumber: phoneNumber,
       });
       if (!register.data) {
         if (register.err == "Network error") {
@@ -122,80 +124,72 @@ const DataScreen = ({route}) => {
             />
             <View style={styles.formContainer}>
               <View>
-                <View style={[styles.collectorContainer,]}>
+                <View style={[styles.collectorContainer]}>
                   <View>
-                     <View
-                        style={{
-                        backgroundColor:'#fff',
-                        elevation:3,
+                    <View
+                      style={{
+                        backgroundColor: "#fff",
+                        elevation: 3,
                         paddingHorizontal: 5,
                         paddingVertical: 2,
                         marginTop: 10,
-                        borderRadius:2
-                    }}
-            >
-              <Picker
-                selectedValue={country}
-                onValueChange={(itemValue) => {
-                  setCountry(itemValue);
-                }}
-              >
-                {countries.map((list, index) => (
-                  <Picker.Item
-                    label={list.currencyName}
-                    value={list.currencyCode}
-                    key={index}
-                  />
-                ))}
-              </Picker>
-            </View>
-                    
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Picker
+                        selectedValue={country}
+                        onValueChange={(itemValue) => {
+                          setCountry(itemValue);
+                        }}
+                      >
+                        {countries.map((list, index) => (
+                          <Picker.Item
+                            label={list.currencyName}
+                            value={list.currencyCode}
+                            key={index}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
                   </View>
                 </View>
 
-
-
-
-                <View style={[styles.collectorContainer,]}>
+                <View style={[styles.collectorContainer]}>
                   <View>
-                     <View
-                        style={{
-                        backgroundColor:'#fff',
-                        elevation:3,
+                    <View
+                      style={{
+                        backgroundColor: "#fff",
+                        elevation: 3,
                         paddingHorizontal: 5,
                         paddingVertical: 2,
                         marginTop: 10,
-                        borderRadius:2
-                    }}
-            >
-              <Picker
-                selectedValue={currency}
-                onValueChange={(itemValue) => {
-                  setCurrency(itemValue);
-                }}
-              >
-                {countries.map((list, index) => (
-                  <Picker.Item
-                    label={list.name}
-                    value={list.isoName}
-                    key={index}
-                  />
-                ))}
-              </Picker>
-            </View>
-                    
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Picker
+                        selectedValue={currency}
+                        onValueChange={(itemValue) => {
+                          setCurrency(itemValue);
+                        }}
+                      >
+                        {countries.map((list, index) => (
+                          <Picker.Item
+                            label={list.name}
+                            value={list.isoName}
+                            key={index}
+                          />
+                        ))}
+                      </Picker>
+                    </View>
                   </View>
                 </View>
-
-                
-
 
                 <View style={styles.collectorContainer}>
                   <View style={styles.inputContainer}>
                     <TextInput
                       placeholder="Phone number"
                       style={styles.input}
-                      onChangeText={(val) => SetPassword(val)}
+                      onChangeText={(val) => setPhoneNumber(val)}
                     />
                     <Entypo name="old-phone" size={24} color="black" />
                   </View>

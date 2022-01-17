@@ -15,15 +15,18 @@ import Action from "../../../components/Action";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { FUNDACCOUNT } from "../../../API/Fund-api";
+import { GETCOUNTRIES, GETTOKEN } from "../../../API/Top-api";
+import { Loading } from "../../../components/Loading";
+
 import {
   StripeProvider,
   CardField,
   useConfirmPayment,
+  useStripe,
 } from "@stripe/stripe-react-native";
 import { Button } from "react-native-paper";
 
 const CardScreen = () => {
-  const token = useSelector((s) => s.UserReducer[1]);
   return (
     <StripeProvider publishableKey="pk_live_51KA1MJHS52jZDXV1U3C7om2rUB2mPj57OgE2T1g2zI98AQ9gtvs5X4qphHlSQQ7ezmOsX5Hm358bZezaHUKoRsGb005qSFABiD">
       <TopUp />
@@ -32,22 +35,73 @@ const CardScreen = () => {
 };
 
 const TopUp = () => {
-  const token = useSelector((s) => s.UserReducer[1]);
+  const user = useSelector((s) => s.UserReducer[0]);
+  const userToken = useSelector((s) => s.UserReducer[1]);
   const [maskedValue, setMaskedValue] = useState("");
   const [amount, setAmount] = useState(0);
   const [cardDetails, setCardDetails] = useState();
-  const { confirmPayment, loading } = useConfirmPayment();
+  const [loading, setLoading] = useState(true);
+  const { confirmPayment } = useConfirmPayment();
+  const [currency, setCurrency] = useState();
+  const [countries, setCountries] = useState();
+  const [token, setToken] = useState();
+  const stripe = useStripe();
+
+  useEffect(async () => {
+    setLoading(true);
+    const GetToken = await GETTOKEN();
+    setToken(GetToken.data.token);
+    const GetCountries = await GETCOUNTRIES(token);
+    setCountries(GetCountries.data);
+    setLoading(false);
+  }, []);
 
   const HandlePayment = async () => {
+    setLoading(true);
     if (!cardDetails?.complete || amount) {
       Alert.alert("Please complete form ");
+      setLoading(false);
       return;
+    } else {
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardDetails,
+      });
+
+      if (!error) {
+        if (countries) {
+          const foundCountry = countries.find((country) => {
+            return country.currencyCode === user.currency;
+          });
+          if (foundCountry) {
+            setCurrency(foundCountry);
+          }
+        }
+        try {
+          setLoading(true);
+          const Fund = await FUNDACCOUNT({
+            token: userToken,
+            amount,
+            id,
+            currency: currency.currencyCode,
+          });
+        } catch (err) {
+          console.log(err);
+          Alert.alert("An error occured", `${err} occured`);
+          setLoading(false);
+        }
+      } else {
+        Alert.alert("An error occured", `${err} occured`);
+      }
     }
-    const Fund = await FUNDACCOUNT(token, cardDetails);
+
     console.log(Fund);
   };
 
-  useEffect(() => {});
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -86,7 +140,7 @@ const TopUp = () => {
                   backgroundColor: "#F5F5F5",
                   paddingHorizontal: 25,
                 }}
-                placeholder="Amount in Dollars"
+                placeholder="Amount "
                 keyboardType="numeric"
               />
             </View>

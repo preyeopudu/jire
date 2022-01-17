@@ -24,19 +24,41 @@ export const GETCOUNTRIES = async (token) => {
 };
 
 export const GETOPERATORS = async (token, country) => {
-  console.log("loading");
-  console.log(token);
-  console.log(country);
   const res = await axios
     .get(
-      `${TOPUP}/operators/countries/${country}?includeBundles=true&includeData=true&includePin=true&suggestedAmounts=true&suggestedAmountsMap=true`,
+      `https://topups.reloadly.com/operators/countries/${country}?includeBundles=true&includeData=true&includePin=true&suggestedAmounts=true&suggestedAmountsMap=true`,
       {
         headers: {
-          Authorization: `${token}`,
-          Accept: "application/com.reloadly.topups-v1+json",
+          Authorization: `Bearer ${token}`,
         },
       }
     )
+    .catch((err) => console.log(err));
+
+  return res;
+};
+
+export const GETOPERATORSID = async (token, operatorId) => {
+  const res = await axios
+    .get(
+      `https://topups.reloadly.com/operators/${operatorId}?suggestedAmounts=true&suggestedAmountsMap=true`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .catch((err) => console.log(err));
+  return res;
+};
+
+export const RECHARGE = async (token, body) => {
+  const response = await axios
+    .post(`https://topups.reloadly.com/topups`, body, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .catch((err) => console.log(err));
 
   return res;
