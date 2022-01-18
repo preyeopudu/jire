@@ -13,7 +13,7 @@ import DrawerHeader from "../../../components/DrawerHeader";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import Action from "../../../components/Action";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { FUNDACCOUNT } from "../../../API/Fund-api";
 import { GETCOUNTRIES, GETTOKEN } from "../../../API/Top-api";
 import { Loading } from "../../../components/Loading";
@@ -25,6 +25,8 @@ import {
   useStripe,
 } from "@stripe/stripe-react-native";
 import { Button } from "react-native-paper";
+import { USER } from "../../../API/Auth-api";
+import { LogIn } from "../../../store/actions";
 
 const CardScreen = () => {
   return (
@@ -85,17 +87,25 @@ const TopUp = () => {
             id,
             currency: currency.currencyCode,
           });
+
+          const getuser = await USER(userToken);
+          dispatch(LogIn(getuser.data.user, userToken));
+          setLoading(false);
+          Alert.alert("Succesfully sent!");
+          console.log(Fund);
         } catch (err) {
           console.log(err);
           Alert.alert("An error occured", `${err} occured`);
           setLoading(false);
         }
       } else {
-        Alert.alert("An error occured", `${err} occured`);
+        Alert.alert(
+          `An error occured ${error.type}`,
+          `${error.localizedMessage}`
+        );
+        console.log(error);
       }
     }
-
-    console.log(Fund);
   };
 
   if (loading) {

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { ScaledSheet } from "react-native-size-matters";
 import DrawerHeader from "../../components/DrawerHeader";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Action from "../../components/Action";
 import { useEffect } from "react";
 import {
@@ -27,6 +27,8 @@ import { Loading } from "../../components/Loading";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Card } from "react-native-paper";
 import { FA5Style } from "@expo/vector-icons/build/FontAwesome5";
+import { USER } from "../../API/Auth-api";
+import { LogIn } from "../../store/actions";
 
 const TopUpScreen = () => {
   const [token, setToken] = useState();
@@ -66,7 +68,10 @@ const TopUpScreen = () => {
         operatorId: operatorId,
         recipientPhone: callingCodes + phoneNumber,
       });
-
+      const getuser = await USER(userToken);
+      dispatch(LogIn(getuser.data.user, userToken));
+      setLoading(false);
+      Alert.alert("Succesfully sent!");
       setLoading(false);
       Alert.alert("Request succesfully sent");
     }

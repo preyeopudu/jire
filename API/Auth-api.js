@@ -14,11 +14,9 @@ export const LOGIN = async (details) => {
 
 export const REGISTER = async (details) => {
   const res = await axios.post(`${ROUTE}/signup`, details).catch((err) => {
-    console.log(err.toJSON().message);
     if (err.toJSON().message === "Network Error") {
       return { err: "Network error" };
     } else if (err.toJSON().message === "Request failed with status code 401") {
-      console.log(1);
       return { err: "401" };
     }
   });
@@ -31,5 +29,16 @@ export const USER = async (token) => {
     .catch((err) => {
       return { err };
     });
+  return res;
+};
+
+export const PROFILE = async (token, user) => {
+  const res = await axios.put(`${ROUTE}/profile`, user).catch((err) => {
+    if (err.toJSON().message === "Network Error") {
+      return { err: "Network error" };
+    } else if (err.toJSON().message === "Request failed with status code 401") {
+      return { err: "401" };
+    }
+  });
   return res;
 };

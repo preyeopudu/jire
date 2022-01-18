@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ROUTE, TOPUP } from "../constants";
 
-export const FUNDACCOUNT = async (token, card) => {
+export const FUNDACCOUNT = async (amount,id,currency,token) => {
   const res = await axios
     .post(`${ROUTE}/refill`, card, {
       headers: {

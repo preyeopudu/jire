@@ -48,7 +48,7 @@ const TopUpScreen = () => {
             onPress={() => {
               navigate("card");
             }}
-            title="Pay with Card"
+            title="Fund with Card"
           />
           <Card
             onPress={() => {

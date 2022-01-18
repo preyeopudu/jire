@@ -13,6 +13,49 @@ const HomeScreen = () => {
   const user = useSelector((s) => s.UserReducer[0]);
   const navigation = useNavigation();
   const n = numbro(user.creditBalance).format({ thousandSeparated: true });
+
+  const renderItem = ({ item }) => {
+    return (
+      <View
+        style={{
+          elevation: 2,
+          backgroundColor: "#fff",
+          marginHorizontal: 20,
+          paddingHorizontal: 20,
+          paddingVertical: 20,
+          borderRadius: 20,
+        }}
+      >
+        <View>
+          <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+            {item.deliveredAmountCurrencyCode} {item.deliveredAmount}{" "}
+            transaction
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginVertical: 10,
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>{item.operatorName}</Text>
+            <Text style={{ fontSize: 16 }}>Reference {item.transactionId}</Text>
+          </View>
+          <Text
+            style={{
+              textAlign: "right",
+              fontSize: 14,
+              fontStyle: "italic",
+            }}
+          >
+            {item.transactionDate}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={{ flex: 1, flexDirection: "column" }}>
       <View
@@ -21,7 +64,7 @@ const HomeScreen = () => {
         <DrawerHeader title="Dashboard" theme={true} />
         <View style={{ flex: 1, justifyContent: "center" }}>
           <Text style={{ color: "#fff", textAlign: "center", fontSize: 38 }}>
-            {"\u20A6"} {n}
+            {user.currency} {n}
           </Text>
           <Text
             style={{
@@ -80,20 +123,30 @@ const HomeScreen = () => {
             <Text style={{ fontSize: 18, color: "#044CAC" }}>See All</Text>
           </TouchableOpacity>
         </View>
-
-        <View style={{ marginTop: 25 }}>
-          <MaterialCommunityIcons
-            name="gauge-empty"
-            size={45}
-            color="black"
-            style={{ alignSelf: "center" }}
-          />
-          <Text
-            style={{ textAlign: "center", fontSize: 13, marginVertical: 10 }}
-          >
-            Seems you're quite low on transactions
-          </Text>
-        </View>
+        {user.transactions.length > 0 ? (
+          <View>
+            <FlatList
+              data={user.transactions.slice(0, 3)}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.transactionId}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        ) : (
+          <View style={{ marginTop: 25 }}>
+            <MaterialCommunityIcons
+              name="gauge-empty"
+              size={45}
+              color="black"
+              style={{ alignSelf: "center" }}
+            />
+            <Text
+              style={{ textAlign: "center", fontSize: 13, marginVertical: 10 }}
+            >
+              Seems you're quite low on transactions
+            </Text>
+          </View>
+        )}
 
         <FAB
           style={styles.fab}

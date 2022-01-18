@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Keyboard } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Keyboard, Alert } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import {
   ScrollView,
@@ -12,9 +12,38 @@ import { TextInput } from "react-native-paper";
 import { MaskedTextInput, Masks } from "react-native-mask-text";
 import { useSelector } from "react-redux";
 import Action from "../../components/Action";
+import { PROFILE } from "../../API/Auth-api";
+import { Loading } from "../../components/Loading";
 
 const AccountScreen = () => {
   const user = useSelector((s) => s.UserReducer[0]);
+  const token = useSelector((s) => s.UserReducer[1]);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const HandleProfile = () => {
+    setLoading(true);
+    if (phoneNumber == "") {
+      Alert.alert("No details filled");
+      setLoading(false);
+    } else {
+      const Profile = PROFILE(token, {
+        currency: user.currency,
+        timezone: user.timezone,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: phoneNumber,
+        address: user.address,
+        country: user.country,
+      });
+      setLoading(false);
+      Alert.alert("Succesfully updated");
+    }
+  };
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
       <TouchableWithoutFeedback
@@ -101,10 +130,18 @@ const AccountScreen = () => {
               keyboardType="numeric"
               activeOutlineColor="#044CAC"
               selectionColor="#044CAC"
+              onChangeText={(val) => {
+                setPhoneNumber(val);
+              }}
             />
 
             <View style={{ marginVertical: 20 }}>
-              <Action title="Update" onPress={() => {}} />
+              <Action
+                title="Update"
+                onPress={() => {
+                  HandleProfile();
+                }}
+              />
             </View>
           </View>
         </View>
