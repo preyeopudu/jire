@@ -27,6 +27,7 @@ const RegistrationScreen = () => {
   const [loading, setLoading] = useState(false);
   const [firstName, SetFirstName] = useState();
   const [lastName, SetLastName] = useState();
+  const [middleName, setMiddleName] = useState("");
   const [email, SetEmail] = useState();
   const [password, SetPassword] = useState();
   const { navigate } = useNavigation();
@@ -41,7 +42,13 @@ const RegistrationScreen = () => {
     ) {
       Alert.alert("REGISTRATION ERROR", "You skipped a field");
     } else {
-      navigate("Data",{firstName:firstName,lastName:lastName,email:email,password:password});
+      navigate("Data", {
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        email: email,
+        password: password,
+      });
     }
   };
 
@@ -103,6 +110,21 @@ const RegistrationScreen = () => {
                 <View style={styles.collectorContainer}>
                   <View style={styles.inputContainer}>
                     <TextInput
+                      placeholder="Middle Name"
+                      style={styles.input}
+                      onChangeText={(val) => setMiddleName(val)}
+                    />
+                    <MaterialIcons
+                      name="verified-user"
+                      size={24}
+                      color="black"
+                    />
+                  </View>
+                </View>
+
+                <View style={styles.collectorContainer}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
                       placeholder="Last Name"
                       style={styles.input}
                       onChangeText={(val) => SetLastName(val)}
@@ -144,7 +166,7 @@ const RegistrationScreen = () => {
             <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => {
-                handleSubmit()
+                handleSubmit();
               }}
             >
               <LinearGradient

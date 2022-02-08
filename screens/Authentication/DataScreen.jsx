@@ -61,6 +61,7 @@ const DataScreen = ({ route }) => {
         password: route.params.password,
         lastName: route.params.lastName,
         firstName: route.params.firstName,
+        middleName: route.params.middlenName,
         currency: currency,
         country: country,
         phoneNumber: phoneNumber,
